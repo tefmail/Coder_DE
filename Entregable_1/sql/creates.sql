@@ -1,10 +1,10 @@
 
 
 -- Active Flights  - tabla de hechos
+-- despegues
+DROP TABLE IF EXISTS tefmail_coderhouse.flights_dep;
 
-DROP TABLE IF EXISTS tefmail_coderhouse.flights;
-
-CREATE TABLE tefmail_coderhouse.flights (
+CREATE TABLE tefmail_coderhouse.flights_dep (
 	flight_date 				DATE, 
 	departure_airport			VARCHAR(255),
 	departure_timezone			VARCHAR(255), 
@@ -39,9 +39,49 @@ CREATE TABLE tefmail_coderhouse.flights (
 	flight_icao					VARCHAR(25) 
 )
 
-sortkey(country_name)
+sortkey(departure_scheduled)
 ;
 
+-- arribos
+DROP TABLE IF EXISTS tefmail_coderhouse.flights_arr;
+
+CREATE TABLE tefmail_coderhouse.flights_arr (
+	flight_date 				DATE, 
+	departure_airport			VARCHAR(255),
+	departure_timezone			VARCHAR(255), 
+	departure_iata				VARCHAR(25), 
+	departure_icao				VARCHAR(25),
+	departure_terminal			VARCHAR(25),
+	departure_gate				INT,
+	departure_delay				INT,
+	departure_scheduled 		TIMESTAMP,
+	departure_estimated	  		TIMESTAMP,
+	departure_actual	 		TIMESTAMP,
+	departure_estimated_runway	TIMESTAMP,
+	departure_actual_runway 	TIMESTAMP,
+	arrival_airport				VARCHAR(255), 
+	arrival_timezone			VARCHAR(255),
+	arrival_iata				VARCHAR(25), 
+	arrival_icao				VARCHAR(25),
+	arrival_terminal			VARCHAR(25),
+	arrival_gate				INT, 
+	arrival_baggage				VARCHAR(25), 
+	arrival_delay				INT,
+	arrival_scheduled 			TIMESTAMP,
+	arrival_estimated 			TIMESTAMP, 
+	arrival_actual 				TIMESTAMP,
+	arrival_estimated_runway 	TIMESTAMP,
+	arrival_actual_runway 		TIMESTAMP,
+	airline_name				VARCHAR(255),
+	airline_iata				VARCHAR(25), 
+	airline_icao				VARCHAR(25),
+	flight_number				VARCHAR(25), 
+	flight_iata					VARCHAR(25),
+	flight_icao					VARCHAR(25) 
+)
+
+sortkey(arrival_scheduled)
+;
 
 -- Airports - tabla de dimension
 
