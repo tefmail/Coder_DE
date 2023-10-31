@@ -36,8 +36,6 @@ json_data_flights_arr = flights_arr.json()["data"]
 df_flights_dep  = pd.json_normalize(json_data_flights_dep)
 df_flights_arr  = pd.json_normalize(json_data_flights_arr)
 
-
-
 # Generamos el data frame para la dimension de aeropuertos.
 # Endpoint y url
 endpoint_2 = "airports"

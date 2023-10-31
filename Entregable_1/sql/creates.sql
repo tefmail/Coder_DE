@@ -13,11 +13,11 @@ CREATE TABLE tefmail_coderhouse.flights_dep (
 	departure_terminal			VARCHAR(25),
 	departure_gate				INT,
 	departure_delay				INT,
-	departure_scheduled 		TIMESTAMP,
-	departure_estimated	  		TIMESTAMP,
+	departure_scheduled			TIMESTAMP,
+	departure_estimated			TIMESTAMP,
 	departure_actual	 		TIMESTAMP,
 	departure_estimated_runway	TIMESTAMP,
-	departure_actual_runway 	TIMESTAMP,
+	departure_actual_runway		TIMESTAMP,
 	arrival_airport				VARCHAR(255), 
 	arrival_timezone			VARCHAR(255),
 	arrival_iata				VARCHAR(25), 
@@ -29,8 +29,8 @@ CREATE TABLE tefmail_coderhouse.flights_dep (
 	arrival_scheduled 			TIMESTAMP,
 	arrival_estimated 			TIMESTAMP, 
 	arrival_actual 				TIMESTAMP,
-	arrival_estimated_runway 	TIMESTAMP,
-	arrival_actual_runway 		TIMESTAMP,
+	arrival_estimated_runway	TIMESTAMP,
+	arrival_actual_runway		TIMESTAMP,
 	airline_name				VARCHAR(255),
 	airline_iata				VARCHAR(25), 
 	airline_icao				VARCHAR(25),
@@ -54,11 +54,11 @@ CREATE TABLE tefmail_coderhouse.flights_arr (
 	departure_terminal			VARCHAR(25),
 	departure_gate				INT,
 	departure_delay				INT,
-	departure_scheduled 		TIMESTAMP,
+	departure_scheduled			TIMESTAMP,
 	departure_estimated	  		TIMESTAMP,
 	departure_actual	 		TIMESTAMP,
 	departure_estimated_runway	TIMESTAMP,
-	departure_actual_runway 	TIMESTAMP,
+	departure_actual_runway		TIMESTAMP,
 	arrival_airport				VARCHAR(255), 
 	arrival_timezone			VARCHAR(255),
 	arrival_iata				VARCHAR(25), 
@@ -70,8 +70,8 @@ CREATE TABLE tefmail_coderhouse.flights_arr (
 	arrival_scheduled 			TIMESTAMP,
 	arrival_estimated 			TIMESTAMP, 
 	arrival_actual 				TIMESTAMP,
-	arrival_estimated_runway 	TIMESTAMP,
-	arrival_actual_runway 		TIMESTAMP,
+	arrival_estimated_runway	TIMESTAMP,
+	arrival_actual_runway		TIMESTAMP,
 	airline_name				VARCHAR(255),
 	airline_iata				VARCHAR(25), 
 	airline_icao				VARCHAR(25),
@@ -103,7 +103,7 @@ CREATE TABLE tefmail_coderhouse.airports (
 )
 
 DISTSTYLE ALL
-sortkey(country_name)
+sortkey(iata_code)
 ;
 
 -- Airlines - tabla de dimension
@@ -129,7 +129,7 @@ CREATE TABLE tefmail_coderhouse.airlines (
 )
 
 DISTSTYLE ALL
-sortkey(country_name)
+sortkey(iata_code)
 ;
 
 
