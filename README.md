@@ -13,7 +13,7 @@ En princio se generan las siguientes tablas:
 
 - Importamos informacion de la API [Aviationstack](https://aviationstack.com/) de vuelos que parten (departure) y arriban (arrivals) del aeropuerto Ezeiza
 - Creamos tablas para los vuelos regitrados
-- Importamos información en tablas de dimensiones, de las aerolineas y también de informaicón de los aeropuertos, para el caso en que mas adelante se quiera utilizar esta información.
+- Importamos información en tablas de dimensiones, de las aerolineas y también de información de los aeropuertos, para el caso en que mas adelante se quiera utilizar esta información.
 - Creamos las tablas de dimension para aeorlineas y aeropuertos
 
 Se eligió para las tablas de hechos, **flights_dep** y **flights_arr**, el ordenamiento por fecha de partida y de arribo respectivamente para ordenar temporalmente los vuelos y establecer una linea temporal de actividad del aeropuerto. 
