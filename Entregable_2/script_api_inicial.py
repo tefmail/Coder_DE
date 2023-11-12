@@ -1,79 +1,52 @@
 # Importamos librerias
-import requests
-import json
-import pandas as pd
-import sqlalchemy as sa
+from utility import *
 
-import os
-from configparser import ConfigParser
+# CONEXION CON API
+# Genero la url con el endpoint = "flights"
+url = conn_api("flights")
 
-from pathlib import Path
-
-
-# Conexion a la API
-def conn_api(config_path, endpoint):
-    # Lee el archivo de configuración
-    parser = ConfigParser()
-    parser.read(config_path)
-
-    # Lee la sección de configuración de PostgreSQL
-    config = parser["api_aviation"]
-    pwd = config['access_key']
-    url_base = "http://api.aviationstack.com/v1"
-    
-    # Construye la cadena de conexión
-    conn_string = f"{url_base}/{endpoint}?access_key={pwd}"
-
-    return conn_string
-
-def create_dataframe(url,params = '1'):
-    if params == '1':
-        request = requests.get(url)
-        json_data = request.json()["data"]
-        df  = pd.json_normalize(json_data)
-    else:
-        request = requests.get(url, params)
-        json_pag = request.json()["pagination"]
-        json_data = request.json()["data"]
-        df  = pd.json_normalize(json_data)
-        i = 0
-        while i < json_pag['total']:
-            i = i + 100
-            params['offset'] = i
-            request = requests.get(url, params)
-            json_data = request.json()["data"]
-            df = df.append(pd.json_normalize(json_data))
-    
-    return df
-
-# Definimos parámetros de configuración de la API    
-
-config_dir =  Path(str(os.getcwd()) + "\config\config.ini") 
-
-
-# Extracción datos endpoint = "flights"
-url = conn_api(config_dir, "flights")
-
-# configuramos parámetros de extracción
+# Definimos parámetros de extracción, dividimos en arribos y partidas
 params_flights_dep = {"dep_iata": "EZE"} 
 params_flights_arr = {"arr_iata": "EZE"} 
-
-print("inicio creacion de dataframe....")
+"""
+print("Creando dataframe de partidas (departures)....")
 df_flights_dep  = create_dataframe(url, params_flights_dep)
-print("dataframe departures creado...")
-print("continuo con arribos")
+print("Dataframe departures creado...")
+print("Creando dataframe de arribos...")
 df_flights_arr  = create_dataframe(url, params_flights_arr)
-print("dataframe arribos creado...")
+print("Dataframe arribos creado...")
+"""
+# TABLAS DE DIMENSION
+# Defino la url del correspondiente endpoint y cargo el datafame
 
-# tablas de dimension
 # Airports
-url_airports = conn_api(config_dir, "airports")
+url_airports = conn_api("airports")
+print("Creando dataframe de aeropuertos (airports)....")
 df_airports = create_dataframe(url_airports)
-
-print("dataframe airports creado...")
+print("Dataframe airports creado...")
 
 # Airlines data
-url_airlines = conn_api(config_dir, "airlines")
+url_airlines = conn_api("airlines")
+print("Creando dataframe de aerolineas (airlines)....")
 df_airlines = create_dataframe(url_airlines)
-print("dataframe airlines creado...finish")
+
+print("Dataframe airlines creado...finish")
 # ------------------------------------
+# Coneactamos a redshift y creamos el objeto de conexion
+conn = connect_to_db("redshift")
+
+
+# Cargar los datasets a la base de datos
+# dfs = [df_flights_dep, df_flights_arr, df_airports, url_airlines]
+# tbl_names = ["flights_dep", "flights_arr", "airports", "airlines"]
+dfs = [df_airports, url_airlines]
+tbl_names = ["airports", "airlines"]
+
+for df, tbl_name in zip(dfs, tbl_names):
+    df.to_sql(
+        name = tbl_name,
+        con = conn,
+        if_exists = "replace",
+        method = "multi",
+        index = False,
+    )
