@@ -2,6 +2,7 @@
 
 import requests
 import json
+import numpy as np
 import pandas as pd
 import sqlalchemy as sa
 import os
