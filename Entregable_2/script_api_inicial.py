@@ -13,11 +13,11 @@ params_flights_dep = {"dep_iata": "EZE"}
 params_flights_arr = {"arr_iata": "EZE"} 
 
 print("Creando dataframe de partidas (departures)....")
-df_flights_dep  = table_db(create_dataframe(url, params_flights_dep))
+df_flights_dep  = fact_table_db(create_dataframe(url, params_flights_dep))
 print("Dataframe departures Ok!")
 
 print("Creando dataframe de arribos...")
-df_flights_arr  = table_db(create_dataframe(url, params_flights_arr))
+df_flights_arr  = fact_table_db(create_dataframe(url, params_flights_arr))
 print("Dataframe arribos Ok!")
 
 # ------------------------------------
@@ -27,14 +27,32 @@ print("Dataframe arribos Ok!")
 
 # Airports
 url_airports = conn_api("airports")
+
+#total_pag_airpot = requests.get(url_airlines).json()["pagination"]["total"]
+
 print("Creando dataframe de aeropuertos (airports)....")
-df_airports = create_dataframe(url_airports)
+params = {}
+params['offset'] = 0
+df_airports = create_dataframe(url_airports, params)
+
+airports_convert_dict = { 'airport_id': 'int32' , 'gmt': 'category','iata_code': "category", 'city_iata_code': "category", 'icao_code': "category", 'country_iso2': "category",'geoname_id': "category", 'latitude': "float", 'longitude': "float", 'airport_name': "category", 'country_name': "category", 'timezone': "category"}
+
+df_airports = df_airports.astype(airports_convert_dict)
 print("Dataframe airports Ok!")
 
 # Airlines data
 url_airlines = conn_api("airlines")
 print("Creando dataframe de aerolineas (airlines)....")
 df_airlines = create_dataframe(url_airlines)
+
+airlines_convert_dict = {'fleet_average_age': "float", 	'airline_id': "int32", 'callsign': "category", 'hub_code': "category", 'iata_code': "category", 'icao_code': "category", 'country_iso2': "category", 'date_founded': "int32", 'iata_prefix_accounting': "int32", 'airline_name': "category", 'country_name': "category", 'fleet_size': "int32", 'status': "category", 'type': "category" }
+
+for i in airlines_convert_dict.keys():
+    if airlines_convert_dict[i] == "int32":
+        df_airlines[i].fillna(0, inplace = True)
+
+df_airlines = df_airlines.astype(airlines_convert_dict)
+
 print("Dataframe airlines Ok!")
 
 # ------------------------------------
@@ -70,9 +88,8 @@ for df, tbl_name in zip(dims, tbl_dims_names):
         method = "multi",
         index = False
     )
-# FALTA IMPLEMENTAR LA INSERCION DE LAS TABLAS DE DIMENSION, UTILIZANDO EL MERGE JUNTO CON LAS OPERACIONES UPDATE E INSERT PARA NO IMPORTAR DATOS DUPLICADOS.
 
-
+# Actualizacion airports
 query = """
 BEGIN;
 MERGE INTO airports
@@ -125,3 +142,5 @@ COMMIT;
 """
 
 conn.execute(query)
+
+# FALTA IMPLEMENTAR LA INSERCION DE LA TABLA DE DIMENSION airlines, UTILIZANDO EL MERGE JUNTO CON LAS OPERACIONES UPDATE E INSERT PARA NO IMPORTAR DATOS DUPLICADOS.

@@ -91,7 +91,7 @@ def connect_to_db(config_section):
 
 
 # Selecciono columnas de interes y cambio tipos de dato 
-def table_db(df):
+def fact_table_db(df):
     columns_names = ['flight_date','departure.airport','departure.timezone','departure.iata','departure.icao','departure.terminal','departure.gate','departure.delay','departure.scheduled','departure.estimated','departure.actual','departure.estimated_runway','departure.actual_runway','arrival.airport','arrival.timezone','arrival.iata','arrival.icao','arrival.terminal','arrival.gate','arrival.baggage','arrival.delay','arrival.scheduled','arrival.estimated','arrival.actual','arrival.estimated_runway','arrival.actual_runway','airline.name','airline.iata','airline.icao','flight.number','flight.iata','flight.icao']
 
     dg = df[columns_names]
@@ -106,9 +106,11 @@ def table_db(df):
         dg.loc[:,i] = pd.to_datetime(dg.loc[:,i])
         
 
-        # lleno con 0 para cambiar el tipo de dato
-    dg[["departure_delay","arrival_delay"]] = dg[["departure_delay","arrival_delay"]].fillna(0)
-    dg[["departure_delay","arrival_delay"]] = dg[["departure_delay","arrival_delay"]].astype('int32')
+    # lleno con 0 para cambiar el tipo de dato
+    int_variables = ["departure_delay","arrival_delay"]
+    for i in int_variables:
+        dg.loc[:,i] = dg.loc[:,i].fillna(0)
+        dg.loc[:,i] = dg.loc[:,i].astype('int32')
 
     cat_variables = ['departure_airport','departure_timezone','departure_iata','departure_icao','departure_terminal','departure_gate','arrival_airport','arrival_timezone','arrival_iata','arrival_icao','arrival_terminal','arrival_gate','arrival_baggage','airline_name','airline_iata','airline_icao','flight_number','flight_iata','flight_icao']
 
