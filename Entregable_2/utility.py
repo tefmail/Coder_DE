@@ -89,3 +89,31 @@ def connect_to_db(config_section):
     return conn
 
 
+
+# Selecciono columnas de interes y cambio tipos de dato 
+def table_db(df):
+    columns_names = ['flight_date','departure.airport','departure.timezone','departure.iata','departure.icao','departure.terminal','departure.gate','departure.delay','departure.scheduled','departure.estimated','departure.actual','departure.estimated_runway','departure.actual_runway','arrival.airport','arrival.timezone','arrival.iata','arrival.icao','arrival.terminal','arrival.gate','arrival.baggage','arrival.delay','arrival.scheduled','arrival.estimated','arrival.actual','arrival.estimated_runway','arrival.actual_runway','airline.name','airline.iata','airline.icao','flight.number','flight.iata','flight.icao']
+
+    dg = df[columns_names]
+    
+    dg.columns = ['flight_date','departure_airport','departure_timezone','departure_iata','departure_icao','departure_terminal','departure_gate','departure_delay','departure_scheduled','departure_estimated','departure_actual','departure_estimated_runway','departure_actual_runway','arrival_airport','arrival_timezone','arrival_iata','arrival_icao','arrival_terminal','arrival_gate','arrival_baggage','arrival_delay','arrival_scheduled','arrival_estimated','arrival_actual','arrival_estimated_runway','arrival_actual_runway','airline_name','airline_iata','airline_icao','flight_number','flight_iata','flight_icao']
+
+        # TIPO DE DATOS
+    
+    time_variables = ['flight_date', 'departure_scheduled', 'departure_estimated', 'departure_actual', 'departure_estimated_runway','departure_actual_runway', 'arrival_scheduled', 'arrival_estimated', 'arrival_actual', 'arrival_estimated_runway', 'arrival_actual_runway']
+
+    for i in time_variables:
+        dg.loc[:,i] = pd.to_datetime(dg.loc[:,i])
+        
+
+        # lleno con 0 para cambiar el tipo de dato
+    dg[["departure_delay","arrival_delay"]] = dg[["departure_delay","arrival_delay"]].fillna(0)
+    dg[["departure_delay","arrival_delay"]] = dg[["departure_delay","arrival_delay"]].astype('int32')
+
+    cat_variables = ['departure_airport','departure_timezone','departure_iata','departure_icao','departure_terminal','departure_gate','arrival_airport','arrival_timezone','arrival_iata','arrival_icao','arrival_terminal','arrival_gate','arrival_baggage','airline_name','airline_iata','airline_icao','flight_number','flight_iata','flight_icao']
+
+    for j in cat_variables:
+        dg.loc[:,cat_variables] = dg.loc[:,cat_variables].astype("category")
+
+    return dg
+
