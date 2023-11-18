@@ -35,25 +35,31 @@ params = {}
 params['offset'] = 0
 df_airports = create_dataframe(url_airports, params)
 
-airports_convert_dict = { 'airport_id': 'int32' , 'gmt': 'category','iata_code': "category", 'city_iata_code': "category", 'icao_code': "category", 'country_iso2': "category",'geoname_id': "category", 'latitude': "float", 'longitude': "float", 'airport_name': "category", 'country_name': "category", 'timezone': "category"}
-
-df_airports = df_airports.astype(airports_convert_dict)
 print("Dataframe airports Ok!")
 
 # Airlines data
 url_airlines = conn_api("airlines")
 print("Creando dataframe de aerolineas (airlines)....")
-df_airlines = create_dataframe(url_airlines)
+df_airlines = create_dataframe(url_airlines, params)
+
+print("Dataframe airlines Ok!")
+
+# cabmiamos tipos de variables
+airports_convert_dict = { 'airport_id': 'int32' , 'gmt': 'category','iata_code': "category", 'city_iata_code': "category", 'icao_code': "category", 'country_iso2': "category",'geoname_id': "category", 'latitude': "float", 'longitude': "float", 'airport_name': "category", 'country_name': "category", 'timezone': "category"}
 
 airlines_convert_dict = {'fleet_average_age': "float", 	'airline_id': "int32", 'callsign': "category", 'hub_code': "category", 'iata_code': "category", 'icao_code': "category", 'country_iso2': "category", 'date_founded': "int32", 'iata_prefix_accounting': "int32", 'airline_name': "category", 'country_name': "category", 'fleet_size': "int32", 'status': "category", 'type': "category" }
 
-for i in airlines_convert_dict.keys():
-    if airlines_convert_dict[i] == "int32":
-        df_airlines[i].fillna(0, inplace = True)
+dicts = [airports_convert_dict, airlines_convert_dict]
+for j in dicts:
+    for i in airlines_convert_dict.keys():
+        if airlines_convert_dict[i] == "int32":
+            df_airlines[i].fillna(0, inplace = True)
+
+df_airports = df_airports.astype(airports_convert_dict)
 
 df_airlines = df_airlines.astype(airlines_convert_dict)
 
-print("Dataframe airlines Ok!")
+print("Dataframe dimensions Ok!")
 
 # ------------------------------------
 # Carga a la base de datos
@@ -61,6 +67,7 @@ print("Dataframe airlines Ok!")
 # Coneactamos a redshift y creamos el objeto de conexion
 conn = connect_to_db("redshift")
 
+print("Cargando tabla de hechos...")
 # Cargo tablas de hechos
 flights = [df_flights_dep, df_flights_arr]
 tbl_fact_names = ["flights_dep", "flights_arr"]
@@ -75,7 +82,10 @@ for df, tbl_name in zip(flights, tbl_fact_names):
         index = False
     )
 
+print("Tablas de hechos cargadas")
+
 # Cargo tablas de dimension del "esquema" que simulamos ser staging
+print("Cargando dimensiones...en stage")
 dims = [df_airports, df_airlines]
 tbl_dims_names = ["stage_airports", "stage_airlines"]
 
@@ -89,6 +99,7 @@ for df, tbl_name in zip(dims, tbl_dims_names):
         index = False
     )
 
+print("Actualizo dimension airports...")
 # Actualizacion airports
 query = """
 BEGIN;
@@ -143,4 +154,5 @@ COMMIT;
 
 conn.execute(query)
 
+print("airports actualizada")
 # FALTA IMPLEMENTAR LA INSERCION DE LA TABLA DE DIMENSION airlines, UTILIZANDO EL MERGE JUNTO CON LAS OPERACIONES UPDATE E INSERT PARA NO IMPORTAR DATOS DUPLICADOS.
