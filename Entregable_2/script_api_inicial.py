@@ -155,4 +155,67 @@ COMMIT;
 conn.execute(query)
 
 print("airports actualizada")
-# FALTA IMPLEMENTAR LA INSERCION DE LA TABLA DE DIMENSION airlines, UTILIZANDO EL MERGE JUNTO CON LAS OPERACIONES UPDATE E INSERT PARA NO IMPORTAR DATOS DUPLICADOS.
+
+print("Actualizo dimension airlines...")
+# Actualizacion airlines
+query_airlines = """
+BEGIN;
+MERGE INTO airlines
+USING stage_airlines AS source
+ON airlines.iata_code = source.iata_code
+WHEN MATCHED THEN
+UPDATE
+SET
+	fleet_average_age = source.fleet_average_age,
+	airline_id = source.airline_id,
+	callsign = source.callsign,
+	hub_code = source.hub_code,
+	iata_code = source.iata_code,
+	icao_code = source.icao_code,
+	country_iso2 = source.country_iso2,
+	date_founded = source.date_founded,
+	iata_prefix_accounting = source.iata_prefix_accounting,
+	airline_name = source.airline_name,
+	country_name = source.country_name,
+	fleet_size = source.fleet_size,
+	status = source.status,
+	type = source.type
+WHEN NOT MATCHED THEN
+INSERT (
+    fleet_average_age,
+    airline_id,
+    callsign,
+    hub_code,
+    iata_code,
+    icao_code,
+    country_iso2,
+    date_founded,
+    iata_prefix_accounting,
+    airline_name,
+    country_name,
+    fleet_size,
+    status,
+    type
+)
+VALUES (
+    source.fleet_average_age,
+    source.airline_id,
+    source.callsign,
+    source.hub_code,
+    source.iata_code,
+    source.icao_code,
+    source.country_iso2,
+    source.date_founded,
+    source.iata_prefix_accounting,
+    source.airline_name,
+    source.country_name,
+    source.fleet_size,
+    source.status,
+    source.type
+);
+COMMIT;
+"""
+
+conn.execute(query_airlines)
+
+print("airports actualizada")
