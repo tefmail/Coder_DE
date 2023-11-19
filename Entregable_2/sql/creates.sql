@@ -71,11 +71,14 @@ CREATE TABLE tefmail_coderhouse.flights_arr (
 	flight_iata VARCHAR(25),
 	flight_icao VARCHAR(25)
 ) sortkey(arrival_scheduled);
+-----------------------------------------------------------------------------------
+-- DIMENSION TABLES 
+-----------------------------------------------------------------------------------
 -- Airports - tabla de dimension
 DROP TABLE IF EXISTS tefmail_coderhouse.airports;
 CREATE TABLE tefmail_coderhouse.airports (
 	airport_id INT PRIMARY KEY,
-	gmt INT,
+	gmt VARCHAR(25),
 	iata_code VARCHAR(25),
 	city_iata_code VARCHAR(25),
 	icao_code VARCHAR(25),
@@ -90,6 +93,43 @@ CREATE TABLE tefmail_coderhouse.airports (
 -- Airlines - tabla de dimension
 DROP TABLE IF EXISTS tefmail_coderhouse.airlines;
 CREATE TABLE tefmail_coderhouse.airlines (
+	fleet_average_age REAL,
+	airline_id INT,
+	callsign VARCHAR(25),
+	hub_code VARCHAR(25),
+	iata_code VARCHAR(25),
+	icao_code VARCHAR(25),
+	country_iso2 VARCHAR(25),
+	date_founded INT,
+	iata_prefix_accounting INT,
+	airline_name VARCHAR(255),
+	country_name VARCHAR(255),
+	fleet_size INT,
+	status VARCHAR(25),
+	type VARCHAR(255)
+) DISTSTYLE ALL sortkey(iata_code);
+-----------------------------------------------------------------------------------
+-- STAGING TABLES 
+-----------------------------------------------------------------------------------
+-- Airports - tabla de dimension
+DROP TABLE IF EXISTS tefmail_coderhouse.stage_airports;
+CREATE TABLE tefmail_coderhouse.stage_airports (
+	airport_id INT PRIMARY KEY,
+	gmt VARCHAR(25),
+	iata_code VARCHAR(25),
+	city_iata_code VARCHAR(25),
+	icao_code VARCHAR(25),
+	country_iso2 VARCHAR(25),
+	geoname_id VARCHAR(25),
+	latitude REAL,
+	longitude REAL,
+	airport_name VARCHAR(255),
+	country_name VARCHAR(255),
+	timezone VARCHAR(255)
+) DISTSTYLE ALL sortkey(iata_code);
+-- Airlines - tabla de dimension
+DROP TABLE IF EXISTS tefmail_coderhouse.stage_airlines;
+CREATE TABLE tefmail_coderhouse.stage_airlines (
 	fleet_average_age REAL,
 	airline_id INT,
 	callsign VARCHAR(25),
