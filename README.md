@@ -22,6 +22,16 @@ Se eligió para las tablas de hechos, **flights_dep** y **flights_arr**, el orde
 Para las tablas de dimensión se eligió como sort key, el campo iata_code, pensando en que pueda ser usual una union (join) de tablas mediante este campo y las tablas de hechos. Se muestra a continuacion la creacion de las tablas de dimension
 
 ### Airports
+
+> The overriding design goal for Markdown's
+> formatting syntax is to make it as readable
+> as possible. The idea is that a
+> Markdown-formatted document should be
+> publishable as-is, as plain text, without
+> looking like it's been marked up with tags
+> or formatting instructions.
+
+
 >CREATE TABLE tefmail_coderhouse.airports ( 
 >	airport_id INT PRIMARY KEY, 
 >	gmt VARCHAR(25), 
