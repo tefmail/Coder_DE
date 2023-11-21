@@ -22,20 +22,20 @@ Se eligió para las tablas de hechos, **flights_dep** y **flights_arr**, el orde
 Para las tablas de dimensión se eligió como sort key, el campo iata_code, pensando en que pueda ser usual una union (join) de tablas mediante este campo y las tablas de hechos. Se muestra a continuacion la creacion de las tablas de dimension
 
 ### Airports
->CREATE TABLE tefmail_coderhouse.airports (
->	airport_id INT PRIMARY KEY,
->	gmt VARCHAR(25),
->	iata_code VARCHAR(25),
->	city_iata_code VARCHAR(25),
->	icao_code VARCHAR(25),
->	country_iso2 VARCHAR(25),
->	geoname_id VARCHAR(25),
->	latitude REAL,
->	longitude REAL,
->	airport_name VARCHAR(255),
->	country_name VARCHAR(255),
->	timezone VARCHAR(255)
->) DISTSTYLE ALL sortkey(iata_code);
+>CREATE TABLE tefmail_coderhouse.airports ( 
+>	airport_id INT PRIMARY KEY, 
+>	gmt VARCHAR(25), 
+>	iata_code VARCHAR(25), 
+>	city_iata_code VARCHAR(25), 
+>	icao_code VARCHAR(25), 
+>	country_iso2 VARCHAR(25), 
+>	geoname_id VARCHAR(25), 
+>	latitude REAL, 
+>	longitude REAL, 
+>	airport_name VARCHAR(255), 
+>	country_name VARCHAR(255), 
+>	timezone VARCHAR(255) 
+>) DISTSTYLE ALL sortkey(iata_code); 
 
 ### Airlines 
 >CREATE TABLE tefmail_coderhouse.airlines (
