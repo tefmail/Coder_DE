@@ -40,22 +40,23 @@ CREATE TABLE tefmail_coderhouse.airports (
 ```
 
 ### Airlines 
->CREATE TABLE tefmail_coderhouse.airlines (
->	fleet_average_age REAL,
->	airline_id INT,
->	callsign VARCHAR(25),
->	hub_code VARCHAR(25),
->	iata_code VARCHAR(25),
->	icao_code VARCHAR(25),
->	country_iso2 VARCHAR(25),
->	date_founded INT,
->	iata_prefix_accounting INT,
->	airline_name VARCHAR(255),
->	country_name VARCHAR(255),
->	fleet_size INT,
->	status VARCHAR(25),
->	type VARCHAR(255)
->) DISTSTYLE ALL sortkey(iata_code);
-
+```sh
+CREATE TABLE tefmail_coderhouse.airlines (
+	fleet_average_age REAL,
+	airline_id INT,
+	callsign VARCHAR(25),
+	hub_code VARCHAR(25),
+	iata_code VARCHAR(25),
+	icao_code VARCHAR(25),
+	country_iso2 VARCHAR(25),
+	date_founded INT,
+	iata_prefix_accounting INT,
+	airline_name VARCHAR(255),
+	country_name VARCHAR(255),
+	fleet_size INT,
+	status VARCHAR(25),
+	type VARCHAR(255)
+) DISTSTYLE ALL sortkey(iata_code);
+```
 
 Todos los códigos utilizados se encuentran en el repositorio GitHub [Coder_DE](https://github.com/tefmail/Coder_DE.git), ordenados por Entregas, de acuerdo al avance que fue teniendo el proyecto.
