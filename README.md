@@ -1,8 +1,8 @@
 # Coder_DE REEDME
 
-## _Entregable 1_
-
 Este trabajo tiene como objetivo registrar los vuelos que arriban y despegan de Ezeiza, aeropuerto internacional de Buenos Aires.
+
+## _Entregable 1_
 
 En princio se generan las siguientes tablas:
 - flights_arr (arribos)
@@ -10,12 +10,20 @@ En princio se generan las siguientes tablas:
 - airports (aeropuertos)
 - airlines (aerolineas)
 
+## _Entregable 2_
+
+Se avanzó en la carga de las tablas, optimización del código de descarga de la API y carga de la información en las tablas creadas en la base de datos. Se crearon funciones para que el código sea mas limpio. Antes de cargar las tablas en la base de datos, se cambiaron los tipos de datos, para que se carguen como corresponde, y el ordenamiento de las tablas funcione correctamente. También, en el caso de las tablas de vuelos, no se tomaron todas las columnas ya que había información que no era de interés.
+
+Se planea a futuro que la carga de las tablas de hechos sean diarias, mientras que la carga y/o actualizacion de las tablas de dimensión sea mensual, pensando en dimensiones lentamente cambiantes.
+
 ## Features
 
 - Importamos informacion de la API [Aviationstack](https://aviationstack.com/) de vuelos que parten (departure) y arriban (arrivals) del aeropuerto Ezeiza
 - Creamos una tabla para cada tipo de hecho, arrivals y departures, debido a una limitación en la cantidad de registros que permite el plan gratuito de la api. 
 - Importamos información en tablas de dimensiones, de las aerolineas y también de información de los aeropuertos, para el caso en que mas adelante se quiera utilizar esta información.
 - Creamos las tablas de dimension para aeorlineas y aeropuertos con información actualizada, con una instancia previa de staging que luego se depura para cargar la informción actualizada en las tablas de dimension finales.
+- Se asignan tipos de datos correcto y se seleccionaron columnas de interes en las tablas de hecho. 
+- Se cargan las tablas a la base de datos.
 
 Se eligió para las tablas de hechos, **flights_dep** y **flights_arr**, el ordenamiento por fecha de partida y de arribo respectivamente para ordenar temporalmente los vuelos y establecer una linea temporal de actividad del aeropuerto. 
 
