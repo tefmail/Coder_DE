@@ -11,13 +11,13 @@ from pathlib import Path
 
 
 # Conexion a la API
-def conn_api(endpoint):
+def conn_api(config_path,endpoint):
     """
     Construye la cadena de conexión a la API aviationstack
     a partir de un archivo de configuración.
     """
     # Lee el archivo de configuración
-    config_path =  Path(os.path.dirname(str(os.getcwd())) + "\config\config.ini")  
+    #config_path =  Path(os.path.dirname(str(os.getcwd())) + "\config\config.ini")  
     print(config_path)
     parser = ConfigParser()
     parser.read(config_path)
@@ -57,14 +57,14 @@ def create_dataframe(url,params = '1'):
     return df
 
 
-def connect_to_db(config_section):
+def connect_to_db(config_path,config_section):
     """
     Construye la cadena de conexión a la base de datos
     a partir de un archivo de configuración.
     """
 
     # Lee el archivo de configuración
-    config_path =  Path(os.path.dirname(str(os.getcwd())) + "\config\config.ini")
+    #config_path =  Path(os.path.dirname(str(os.getcwd())) + "\config\config.ini")
     parser = ConfigParser()
     parser.read(config_path)
 

@@ -1,9 +1,9 @@
 # Importamos librerias
 from utility import *
 from datetime import date
+import os
 
-
-
+config_path =  "..\config\config.ini"
 # ------------------------------------
 # TABLAS DE HECHOS
 # ------------------------------------
@@ -11,7 +11,7 @@ from datetime import date
 def load_fact_table():
     # CONEXION CON API
     # Genero la url con el endpoint = "flights"
-    url = conn_api("flights")
+    url = conn_api(config_path,"flights")
     params_flights_dep = {"dep_iata": "EZE"} 
     params_flights_arr = {"arr_iata": "EZE"} 
 
@@ -27,7 +27,7 @@ def load_fact_table():
     # Carga a la base de datos
     # ------------------------------------
     # Coneactamos a redshift y creamos el objeto de conexion
-    conn = connect_to_db("redshift")
+    conn = connect_to_db(config_path,"redshift")
 
     print("Cargando tabla de hechos...")
     # Cargo tablas de hechos
@@ -62,7 +62,7 @@ def load_dim_tables():
     # Genero la url con el endpoint = "airport"
 
         # Airports
-        url_airports = conn_api("airports")
+        url_airports = conn_api(config_path,"airports")
 
         #total_pag_airpot = requests.get(url_airlines).json()["pagination"]["total"]
 
@@ -74,7 +74,7 @@ def load_dim_tables():
         print("Dataframe airports Ok!")
 
         # Airlines data
-        url_airlines = conn_api("airlines")
+        url_airlines = conn_api(config_path,"airlines")
         print("Creando dataframe de aerolineas (airlines)....")
         df_airlines = create_dataframe(url_airlines, params)
 
@@ -98,7 +98,7 @@ def load_dim_tables():
         print("Dataframe dimensions Ok!")
 
     # Coneactamos a redshift y creamos el objeto de conexion
-    conn = connect_to_db("redshift")
+    conn = connect_to_db(config_path,"redshift")
     # Cargo tablas de dimension del "esquema" que simulamos ser staging
     if today.day == 1:
         params['offset'] = 0
@@ -239,4 +239,4 @@ def load_dim_tables():
     else:
         mje_final ="Las dimensiones se actualizan el 1ro de cada mes"
 
-    return 
+    return print(mje_final)
