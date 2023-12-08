@@ -239,4 +239,4 @@ def load_dim_tables():
     else:
         mje_final ="Las dimensiones se actualizan el 1ro de cada mes"
 
-    return mje_final
+    return 

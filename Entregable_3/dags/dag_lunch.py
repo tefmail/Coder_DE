@@ -1,7 +1,8 @@
 from datetime import datetime, timedelta
 from airflow import DAG
-from airflow.operators.dummy import DummyOperator
-from airflow.operators.python_operator import PythonOperator
+from airflow.operators.dummy_operator import DummyOperator
+
+from airflow.operators.python_operator  import PythonOperator
 from airflow.providers.postgres.operators.postgres import PostgresOperator
 
 from scripts.main import load_fact_table, load_dim_tables
@@ -30,32 +31,30 @@ with DAG(
         task_id="create_tables",
         postgres_conn_id="coderhouse_redshift",
         sql="sql/creates.sql",
-        hook_params={
-            "options": "-c search_path=tefmail_coderhouse_schema"
-        }
+        database = "data-engineer-database",
+        #hook_params={"options": "-c search_path=tefmail_coderhouse"}
     )
 
     # load fact tables
     task1=PythonOperator(
         task_id='load_fact_tables',
-        python_callable=load_fact_table,
+        python_callable=load_fact_table
 
     )
 
     # load dim tables
-    task1=PythonOperator(
+    task2=PythonOperator(
         task_id='load_dim_tables',
-        python_callable=load_dim_tables,
-
+        python_callable=load_dim_tables
     )
+
     dummy_end_task = DummyOperator(
         task_id="end"
     )
 
     dummy_start_task >> create_tables_task
-    create_tables_task >> load_fact_tables
-    create_tables_task >> load_dim_tables
+    create_tables_task >> task1 
+    create_tables_task >> task2
 
-    load_fact_tables >> dummy_end_task
-    load_dim_tables >> dummy_end_task
-
+    task1 >> dummy_end_task
+    task2 >> dummy_end_task

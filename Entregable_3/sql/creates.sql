@@ -1,7 +1,6 @@
 -- Active Flights  - tabla de hechos
 -- despegues
-DROP TABLE IF EXISTS tefmail_coderhouse.flights_dep;
-CREATE TABLE tefmail_coderhouse.flights_dep (
+CREATE TABLE IF NOT EXISTS tefmail_coderhouse.flights_dep (
 	flight_date DATE,
 	departure_airport VARCHAR(255),
 	departure_timezone VARCHAR(255),
@@ -36,8 +35,7 @@ CREATE TABLE tefmail_coderhouse.flights_dep (
 	flight_icao VARCHAR(25)
 ) sortkey(departure_scheduled);
 -- arribos
-DROP TABLE IF EXISTS tefmail_coderhouse.flights_arr;
-CREATE TABLE tefmail_coderhouse.flights_arr (
+CREATE TABLE IF NOT EXISTS tefmail_coderhouse.flights_arr (
 	flight_date DATE,
 	departure_airport VARCHAR(255),
 	departure_timezone VARCHAR(255),
@@ -112,8 +110,7 @@ CREATE TABLE tefmail_coderhouse.airlines (
 -- STAGING TABLES 
 -----------------------------------------------------------------------------------
 -- Airports - tabla de dimension
-DROP TABLE IF EXISTS tefmail_coderhouse.stage_airports;
-CREATE TABLE tefmail_coderhouse.stage_airports (
+CREATE TABLE IF NOT EXISTS tefmail_coderhouse.stage_airports (
 	airport_id INT PRIMARY KEY,
 	gmt VARCHAR(25),
 	iata_code VARCHAR(25),
@@ -128,8 +125,7 @@ CREATE TABLE tefmail_coderhouse.stage_airports (
 	timezone VARCHAR(255)
 ) DISTSTYLE ALL sortkey(iata_code);
 -- Airlines - tabla de dimension
-DROP TABLE IF EXISTS tefmail_coderhouse.stage_airlines;
-CREATE TABLE tefmail_coderhouse.stage_airlines (
+ tefmail_coderhouse.stage_airlines (
 	fleet_average_age REAL,
 	airline_id INT,
 	callsign VARCHAR(25),
