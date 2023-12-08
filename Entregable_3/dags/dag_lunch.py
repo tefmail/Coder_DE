@@ -8,7 +8,7 @@ from airflow.providers.postgres.operators.postgres import PostgresOperator
 from scripts.main import load_fact_table, load_dim_tables
 
 default_args={
-    'retries':5,
+    'retries':2,
     'retry_delay':timedelta(minutes=2)
 
 }
@@ -38,14 +38,15 @@ with DAG(
     # load fact tables
     task1=PythonOperator(
         task_id='load_fact_tables',
-        python_callable=load_fact_table
-
+        python_callable=load_fact_table,
+        op_kwargs={"config_path": "/opt/airflow/config/config.ini"}
     )
 
     # load dim tables
     task2=PythonOperator(
         task_id='load_dim_tables',
-        python_callable=load_dim_tables
+        python_callable=load_dim_tables,
+        op_kwargs={"config_path": "/opt/airflow/config/config.ini"}
     )
 
     dummy_end_task = DummyOperator(

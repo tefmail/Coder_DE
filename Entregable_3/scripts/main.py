@@ -8,7 +8,7 @@ config_path =  "..\config\config.ini"
 # TABLAS DE HECHOS
 # ------------------------------------
 # Definimos parámetros de extracción, dividimos en arribos y partidas
-def load_fact_table():
+def load_fact_table(config_path):
     # CONEXION CON API
     # Genero la url con el endpoint = "flights"
     url = conn_api(config_path,"flights")
@@ -53,7 +53,7 @@ def load_fact_table():
 # ------------------------------------
 # Cargo dimensiones el primer dia del mes
 # Defino la url del correspondiente endpoint y cargo el datafame
-def load_dim_tables():
+def load_dim_tables(config_path):
 
     today = date.today()
     if today.day == 1:
@@ -240,3 +240,8 @@ def load_dim_tables():
         mje_final ="Las dimensiones se actualizan el 1ro de cada mes"
 
     return print(mje_final)
+
+
+if __name__ == "__main__":
+    load_fact_table(config_path)
+    load_dim_tables(config_path)
