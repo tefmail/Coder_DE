@@ -9,7 +9,7 @@ from scripts.main import load_fact_table, load_dim_tables
 
 default_args={
     'retries':5,
-    'retry_delay':timedelta(minutes=5)
+    'retry_delay':timedelta(minutes=2)
 
 }
 
@@ -31,8 +31,8 @@ with DAG(
         task_id="create_tables",
         postgres_conn_id="coderhouse_redshift",
         sql="sql/creates.sql",
-        database = "data-engineer-database",
-        #hook_params={"options": "-c search_path=tefmail_coderhouse"}
+        #database = "data-engineer-database",
+        hook_params={"options": "-c search_path=tefmail_coderhouse"}
     )
 
     # load fact tables
