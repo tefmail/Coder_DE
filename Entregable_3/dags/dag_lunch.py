@@ -6,6 +6,7 @@ from airflow.operators.python_operator  import PythonOperator
 from airflow.providers.postgres.operators.postgres import PostgresOperator
 
 from scripts.main import load_fact_table, load_dim_tables
+from scripts.utility import *
 
 default_args={
     'retries':2,

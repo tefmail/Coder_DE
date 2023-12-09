@@ -52,7 +52,7 @@ def create_dataframe(url,params = '1'):
             params['offset'] = i
             request = requests.get(url, params)
             json_data = request.json()["data"]
-            df = df.append(pd.json_normalize(json_data))
+            df = pd.concat([df,pd.json_normalize(json_data)])
     
     return df
 
