@@ -4,5 +4,5 @@
 # ignore ALL files in ANY directory named temp
 logs/
 
-/dags/_pycache_
+/dags/__pycache__
 /scripts__pycache__
