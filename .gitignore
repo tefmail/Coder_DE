@@ -5,3 +5,4 @@
 logs/
 
 /dags/_pycache_
+/scripts__pycache__
