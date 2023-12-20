@@ -5,6 +5,8 @@ from airflow.operators.dummy_operator import DummyOperator
 from airflow.operators.python_operator  import PythonOperator
 from airflow.providers.postgres.operators.postgres import PostgresOperator
 
+import smtplib
+
 from scripts.main import load_fact_table, load_dim_tables
 from scripts.utility import *
 
@@ -19,7 +21,7 @@ with DAG(
     dag_id='dag_lunch',
     description= 'Mi dag',
     start_date=datetime(2023,12,2),
-    schedule_interval='@daily',
+    schedule_interval='0 */12 * * *',  #'@daily',
     catchup=False
     ) as dag:
 
