@@ -1,11 +1,9 @@
 from datetime import datetime, timedelta
-from airflow import DAG, Variable
+from airflow import DAG
 from airflow.operators.dummy_operator import DummyOperator
 
 from airflow.operators.python_operator  import PythonOperator
 from airflow.providers.postgres.operators.postgres import PostgresOperator
-
-import smtplib
 
 from scripts.main import load_fact_table, load_dim_tables
 from scripts.utility import *
@@ -15,34 +13,14 @@ default_args={
     'retry_delay':timedelta(minutes=2)
 }
 
-def enviar(**context):
-    try:
-        x = smtplib.SMTP('smtp.gmail.com',587)
-        x.starttls()
-        
-        print(f"Mi clave es: {Variable.get('GMAIL_SECRET')}")
-        x.login(
-            'guidonfranco@gmail.com',
-            Variable.get('GMAIL_SECRET')
-        )
-
-        subject = f'Airflow reporte {context["dag"]} {context["ds"]}'
-        body_text = f'Tarea {context["task_instance_key_str"]} ejecutada'
-        message='Subject: {}\n\n{}'.format(subject,body_text)
-        
-        x.sendmail('guidonfranco@gmail.com', 'guidonfranco@gmail.com', message)
-        print('Exito')
-    except Exception as exception:
-        print(exception)
-        print('Failure')
-
 with DAG(
     default_args=default_args,
     dag_id='dag_lunch',
     description= 'Mi dag',
     start_date=datetime(2023,12,2),
     schedule_interval='0 */12 * * *',  #'@daily',
-    catchup=False
+    catchup=False,
+    on_success_callback=None
     ) as dag:
 
     # task con dummy operator
@@ -72,6 +50,11 @@ with DAG(
         op_kwargs={"config_path": "/opt/airflow/config/config.ini"}
     )
 
+    task3=PythonOperator(
+        task_id='smtp',
+        python_callable=enviar,
+        )
+
     dummy_end_task = DummyOperator(
         task_id="end"
     )
@@ -80,5 +63,7 @@ with DAG(
     create_tables_task >> task1 
     create_tables_task >> task2
 
-    task1 >> dummy_end_task
-    task2 >> dummy_end_task
+    task1 >> task3
+    task2 >> task3
+
+    task3 >> dummy_end_task

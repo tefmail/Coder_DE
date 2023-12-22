@@ -1,5 +1,3 @@
-
-
 import requests
 import json
 import numpy as np
@@ -8,7 +6,8 @@ import sqlalchemy as sa
 import os
 from configparser import ConfigParser
 from pathlib import Path
-
+import smtplib
+from airflow.models import Variable
 
 # Conexion a la API
 def conn_api(config_path,endpoint):
@@ -22,7 +21,6 @@ def conn_api(config_path,endpoint):
     parser = ConfigParser()
     parser.read(config_path)
    
-
     # Lee la sección de configuración de PostgreSQL
     config = parser["api_aviation"]
     pwd = config['access_key']
@@ -120,3 +118,23 @@ def fact_table_db(df):
 
     return dg
 
+def enviar(**context):
+    try:
+        x = smtplib.SMTP('smtp.gmail.com',587)
+        x.starttls()
+        
+        print(f"Mi clave es: {Variable.get('gmail_secret')}")
+        x.login(
+            'tefmail@gmail.com',
+            Variable.get('gmail_secret')
+        )
+
+        subject = f'Airflow reporte {context["dag"]}  {context["ts"]}'
+        body_text = f'DAG Ejecutado: {context["task_instance_key_str"]}'
+        message='Subject: {}\n\n{}'.format(subject,body_text)
+        
+        x.sendmail('tefmail@gmail.com', 'tefmail@gmail.com', message)
+        print('Exito')
+    except Exception as exception:
+        print(exception)
+        print('Failure')
