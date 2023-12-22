@@ -20,7 +20,7 @@ with DAG(
     start_date=datetime(2023,12,2),
     schedule_interval='0 */12 * * *',  #'@daily',
     catchup=False,
-    on_success_callback=None
+    on_success_callback=enviar
     ) as dag:
 
     # task con dummy operator
@@ -43,6 +43,11 @@ with DAG(
         op_kwargs={"config_path": "/opt/airflow/config/config.ini"}
     )
 
+    task4=PythonOperator(
+        task_id='alerta_smtp',
+        python_callable=enviar_alerta,
+        )
+
     # load dim tables
     task2=PythonOperator(
         task_id='load_dim_tables',
@@ -64,6 +69,8 @@ with DAG(
     create_tables_task >> task2
 
     task1 >> task3
+    task1 >> task4
     task2 >> task3
 
+    task4 >> dummy_end_task
     task3 >> dummy_end_task

@@ -130,11 +130,34 @@ def enviar(**context):
         )
 
         subject = f'Airflow reporte {context["dag"]}  {context["ts"]}'
-        body_text = f'DAG Ejecutado: {context["task_instance_key_str"]}'
+        body_text = f'DAG Ejecutado: {context["task_instance_key_str"]} se ejecutó con éxito.'
         message='Subject: {}\n\n{}'.format(subject,body_text)
         
         x.sendmail('tefmail@gmail.com', 'tefmail@gmail.com', message)
         print('Exito')
     except Exception as exception:
+
+    
         print(exception)
         print('Failure')
+
+def enviar_alerta(ti, **context):
+    departure_delays = ti.xcom_pull(key='delay', task_ids='delay') 
+    if departure_delays > 0:
+    
+        x = smtplib.SMTP('smtp.gmail.com',587)
+        x.starttls()
+        
+        print(f"vuelos demorados en el dia: {departure_delays}")
+        x.login(
+            'tefmail@gmail.com',
+            Variable.get('gmail_secret')
+        )
+
+        subject = f'Airflow reporte {context["dag"]}  {context["ts"]}'
+        body_text = f'DAG Ejecutado: {context["task_instance_key_str"]} se ejecutó con éxito y se encontraron {departure_delays} vuelos demorados mas de 3 hs.'
+        message='Subject: {}\n\n{}'.format(subject,body_text)
+        
+        x.sendmail('tefmail@gmail.com', 'tefmail@gmail.com', message)
+        print('Exito')
+    

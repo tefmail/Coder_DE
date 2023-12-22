@@ -8,7 +8,7 @@ config_path =  "..\config\config.ini"
 # TABLAS DE HECHOS
 # ------------------------------------
 # Definimos parámetros de extracción, dividimos en arribos y partidas
-def load_fact_table(config_path):
+def load_fact_table(config_path,ti):
     # CONEXION CON API
     # Genero la url con el endpoint = "flights"
     url = conn_api(config_path,"flights")
@@ -45,6 +45,20 @@ def load_fact_table(config_path):
         )
 
     print("Tablas de hechos cargadas")
+
+    # Cuantos vuelos han partido retrasados desde Ezeiza el dia de hoy
+    df_today_list = [date.today() for item in range(df_flights_dep["flight_date"].size)]
+    df_today = pd.DataFrame()
+    df_today["date"] = df_today_list
+    df_today["date"] = pd.to_datetime(df_today["date"])
+
+    df_aux = pd.concat([df_today["date"].reset_index(drop=True), df_flights_dep[["airline_name","departure_delay", "flight_date"]].reset_index(drop=True)],ignore_index = True, axis=1)
+    df_aux.columns =["date", "airline_name","departure_delay", "flight_date"]
+
+    departure_delays = df_aux[(df_aux["departure_delay"]>180) & (df_aux["date"] == df_aux["flight_date"]) ]["departure_delay"].count()
+    print(f"vuelos con demora: {departure_delays}")
+    print(type(departure_delays))
+    ti.xcom_push(key='delay', value=departure_delays)
 
     return
 

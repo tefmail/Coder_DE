@@ -2,19 +2,19 @@
 
 Este trabajo tiene como objetivo registrar los vuelos que arriban y despegan de Ezeiza, aeropuerto internacional de Buenos Aires.
 
-## _Entregable 1_
+## Definicion Tablas
 
-En princio se generan las siguientes tablas:
+Se generan tablas de hechos(vuelos) y algunas de tablas de dimensiones(aeropuertos y aerolineas). Los nombres de tablas son las siguientes:
 - flights_arr (arribos)
 - flights_dep (partidas)
 - airports (aeropuertos)
 - airlines (aerolineas)
 
-## _Entregable 2_
+En el trabajo se realizó una primera carga de las tablas de dimensionn la base de datos de redshift provista por CoderHouse, y se genero un código de descarga de la API, transformacion de datos y carga de la información en las tablas de hechos. Se crearon funciones para que el código sea mas limpio. Antes de cargar las tablas en la base de datos, se realizo el trabajo de transformacion de datos, para ello se cambiaron los tipos de datos y se seleccionaron algunas columnas de interés respecto a la totalidad provista por la API. Se seleccionó la columna de fecha de arribo o salida, según corresponda para el ordenamiento de las tablas, siendo la temporalidad de los vuelos un factor importante para los análisis que puedan querer realizarse y por lo tanto óptimo para el funcionamiento de las query. 
 
-Se avanzó en la carga de las tablas, optimización del código de descarga de la API y carga de la información en las tablas creadas en la base de datos. Se crearon funciones para que el código sea mas limpio. Antes de cargar las tablas en la base de datos, se cambiaron los tipos de datos, para que se carguen como corresponde, y el ordenamiento de las tablas funcione correctamente. También, en el caso de las tablas de vuelos, no se tomaron todas las columnas ya que había información que no era de interés.
+Se generó un DAG que permite la carga de las tablas de hechos de forma diaria, mientras que la carga y/o actualizacion de las tablas de dimensión es mensual, pensando en dimensiones lentamente cambiantes.
 
-Se planea a futuro que la carga de las tablas de hechos sean diarias, mientras que la carga y/o actualizacion de las tablas de dimensión sea mensual, pensando en dimensiones lentamente cambiantes.
+Asi mismo se configuró una tarea que envía un correo electrónico cuando la tarea ha fallado y se genero la alerta cuando existen vuelos que hayan salido demorados en mas de 3hs desde el aeropuerto.
 
 ## Features
 
@@ -67,4 +67,3 @@ CREATE TABLE tefmail_coderhouse.airlines (
 ) DISTSTYLE ALL sortkey(iata_code);
 ```
 
-Todos los códigos utilizados se encuentran en el repositorio GitHub [Coder_DE](https://github.com/tefmail/Coder_DE.git), ordenados por Entregas, de acuerdo al avance que fue teniendo el proyecto.
