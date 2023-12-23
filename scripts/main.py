@@ -270,13 +270,13 @@ def enviar_alerta(config_path):
     """
     data = pd.read_sql(query, conn) 
 
-    departure_delays = int(str(data.values.tolist()).strip("[]"))
+    departure_delays = str(data.values.tolist()).strip("[]")
     
     #departure_delays = ti.xcom_pull(key='delay', task_ids='delay') 
     print(f"vuelos con demora: {departure_delays}")
     print(type(departure_delays))
     
-    if departure_delays > 0:
+    if int(departure_delays) > 0:
     
         x = smtplib.SMTP('smtp.gmail.com',587)
         x.starttls()

@@ -130,7 +130,7 @@ def enviar(**context):
         )
 
         subject = f'Airflow reporte {context["dag"]}  {context["ts"]}'
-        body_text = f'DAG Ejecutado: {context["task_instance_key_str"]} se ejecutó con éxito.'
+        body_text = f'DAG Ejecutado: {context["task_instance_key_str"]} con éxito.'
         message='Subject: {}\n\n{}'.format(subject,body_text)
         
         x.sendmail('tefmail@gmail.com', 'tefmail@gmail.com', message)

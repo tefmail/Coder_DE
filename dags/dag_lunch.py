@@ -69,9 +69,9 @@ with DAG(
     create_tables_task >> task1 
     create_tables_task >> task2
 
-    task1 >> task3
     task1 >> task4
     task2 >> task3
+    task4 >> task3
 
-    task4 >> dummy_end_task
+  
     task3 >> dummy_end_task
