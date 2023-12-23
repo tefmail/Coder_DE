@@ -5,7 +5,7 @@ from airflow.operators.dummy_operator import DummyOperator
 from airflow.operators.python_operator  import PythonOperator
 from airflow.providers.postgres.operators.postgres import PostgresOperator
 
-from scripts.main import load_fact_table, load_dim_tables
+from scripts.main import load_fact_table, load_dim_tables, enviar_alerta
 from scripts.utility import *
 
 default_args={
@@ -46,6 +46,7 @@ with DAG(
     task4=PythonOperator(
         task_id='alerta_smtp',
         python_callable=enviar_alerta,
+        op_kwargs={"config_path": "/opt/airflow/config/config.ini"}
         )
 
     # load dim tables

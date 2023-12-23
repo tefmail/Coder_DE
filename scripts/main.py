@@ -55,7 +55,9 @@ def load_fact_table(config_path,ti):
     df_aux = pd.concat([df_today["date"].reset_index(drop=True), df_flights_dep[["airline_name","departure_delay", "flight_date"]].reset_index(drop=True)],ignore_index = True, axis=1)
     df_aux.columns =["date", "airline_name","departure_delay", "flight_date"]
 
-    departure_delays = df_aux[(df_aux["departure_delay"]>180) & (df_aux["date"] == df_aux["flight_date"]) ]["departure_delay"].count()
+    departure_delays = str(df_aux[(df_aux["departure_delay"]>180) & (df_aux["date"] == df_aux["flight_date"]) ]["departure_delay"].count())
+
+
     print(f"vuelos con demora: {departure_delays}")
     print(type(departure_delays))
     ti.xcom_push(key='delay', value=departure_delays)
@@ -255,7 +257,45 @@ def load_dim_tables(config_path):
 
     return print(mje_final)
 
+def enviar_alerta(config_path):
+    
+    # Coneactamos a redshift y creamos el objeto de conexion
+    conn = connect_to_db(config_path,"redshift")
+
+
+    query = """
+    SELECT COUNT(DISTINCT flight_number) FROM flights_dep
+    WHERE FLIGHT_DATE =  CURRENT_DATE 
+    AND DEPARTURE_DELAY  > 180;
+    """
+    data = pd.read_sql(query, conn) 
+
+    departure_delays = int(str(data.values.tolist()).strip("[]"))
+    
+    #departure_delays = ti.xcom_pull(key='delay', task_ids='delay') 
+    print(f"vuelos con demora: {departure_delays}")
+    print(type(departure_delays))
+    
+    if departure_delays > 0:
+    
+        x = smtplib.SMTP('smtp.gmail.com',587)
+        x.starttls()
+        
+        print(f"vuelos demorados en el dia: {departure_delays}")
+        x.login(
+            'tefmail@gmail.com',
+            Variable.get('gmail_secret')
+        )
+
+        subject = f'Airflow reporte'
+        body_text = f'DAG Ejecutado: se ejecutó con éxito y se encontraron {departure_delays} vuelos demorados mas de 3 hs.'
+        message='Subject: {}\n\n{}'.format(subject,body_text)
+        
+        x.sendmail('tefmail@gmail.com', 'tefmail@gmail.com', message)
+        print('Exito')
+    
 
 if __name__ == "__main__":
     load_fact_table(config_path)
     load_dim_tables(config_path)
+    enviar_alerta(config_path)
