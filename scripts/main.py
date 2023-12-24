@@ -289,7 +289,7 @@ def enviar_alerta(config_path):
 
         subject = f'Airflow reporte'
         body_text = f'DAG Ejecutado: se ejecutó con éxito y se encontraron {departure_delays} vuelos demorados mas de 3 hs.'
-        message='Subject: {}\n\n{}'.format(subject,body_text)
+        message='Subject: {}\n\n{}'.format(subject,body_text).encode("utf-8") 
         
         x.sendmail('tefmail@gmail.com', 'tefmail@gmail.com', message)
         print('Exito')
